@@ -1,4 +1,7 @@
 <html>
+	<head>
+		<meta charset="utf-8" />
+	</head>
 	<body>
 		<div id="comment">
 
@@ -6,10 +9,12 @@
 		<script src="http://op44al5jk.bkt.clouddn.com/jquery.min.js"></script>
 		<script src="comment.js"></script>
 		<script>
-			shaoshuo.init({
-				appKey: 'dda70a4bfe0f34ad59f0fd878f0bca6b709f36c0',
-				page: 'testpage',
-				element: 'comment',
+			$(document).ready(function() {
+				shaoshuo.init({
+					appKey: 'dda70a4bfe0f34ad59f0fd878f0bca6b709f36c0',
+					page: 'testpage',
+					element: 'comment',
+				});
 			});
 		</script>
 	</body>
