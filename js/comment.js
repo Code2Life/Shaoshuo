@@ -414,7 +414,6 @@ $(document).ready(function () {
 
     /** 开始加载cdn资源 */
     var loadCnt = 1;
-    dynamicLoading.css(CommentConfig.cdnStorage + 'umeditor/css/umeditor.min.css');
     // 获取当前IP和地理信息
     dynamicLoading.js('http://pv.sohu.com/cityjson?ie=utf-8', checkLoaded);
     function checkLoaded() {
