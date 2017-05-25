@@ -195,7 +195,7 @@ $(document).ready(function () {
   /**对回复的评论事件响应 */
   Comment.prototype.commentReply = function (id) {
     var content = this.replyEditor.$txt.html().trim();
-    var plain = this.editor.$txt.text().trim();
+    var plain = this.replyEditor.$txt.text().trim();
     this.commentRequest(content, plain, this.commentsDict[id].sequence);
   };
 
@@ -343,16 +343,17 @@ $(document).ready(function () {
     </div>';
     html += '<div class="comment-content-area"><ul class="comment-content-list">';
     for (var commentItem in comments) {
-      html += genCommentContent(comments[commentItem]);
+      html += '<li class="comment-item-li">';
+      html += genCommentContent(comments[commentItem], 1);
+      html += '</li>';
     }
     html += '</ul></div></div>';
     return html;
   }
 
   /** 生成每个评论内容的html */
-  function genCommentContent(commentItem) {
-    var html = '';
-    html += '<li id="comment-' + commentItem.id + '" class="comment-item-li"><div class="comment-item-div">';
+  function genCommentContent(commentItem, depth) {
+    var html = '<div id="comment-' + commentItem.id + '" class="comment-item-div">';
     html += '<img src="default-icon.jpg" />';
     html += '<div class="comment-item-header">\
     <div class="comment-header-info">' +
@@ -364,11 +365,13 @@ $(document).ready(function () {
     <span class="comment-header-reply-icon"></span>回复</a>\
     </div></div>';
     html += '<div class="comment-content-text">' + commentItem.content + '</div>';
-    html += '</div><div class="comment-reply-div">';
+    html += '</div>';
     for (var subItem in commentItem.subItems) {
-      html += genCommentContent(commentItem.subItems[subItem]);
+      html += '<div class="comment-reply-div" style="margin-left:' + depth*20 +'px" >';
+      html += genCommentContent(commentItem.subItems[subItem], depth + 1);
+      html += '</div>';
     }
-    html += '</div></li>';
+    html += '</div>';
     return html;
   }
 
