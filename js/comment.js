@@ -354,7 +354,7 @@ $(document).ready(function () {
   /** 生成每个评论内容的html */
   function genCommentContent(commentItem, depth) {
     var html = '<div id="comment-' + commentItem.id + '" class="comment-item-div">';
-    html += '<img src="default-icon.jpg" />';
+    html += '<img width="33px" height="33px" src="' + CommentConfig.cdnStorage + 'default-icon.jpg" />';
     html += '<div class="comment-item-header">\
     <div class="comment-header-info">' +
       (!!commentItem.username ? commentItem.username : ('神秘游客&nbsp;' + commentItem.region)) +
