@@ -41,6 +41,7 @@ $(document).ready(function () {
 
   (function initEditorConfig() {
     wangEditor.config.mapAk = '61su9bm0PHw4gkMIZt8cZWpG'
+    wangEditor.config.menuFixed = false;
     var tmpWeibo = wangEditor.config.emotions.weibo;
     wangEditor.config.emotions = {
       default: {
@@ -87,7 +88,10 @@ $(document).ready(function () {
     this.alertFunc = window.alert;
     this.order = CommentOrder.earliest;
     this.currentUser = localStorage.getItem('comment-user-name');
-    this.noname = false;
+    if(this.currentUser)
+      this.noname = false;
+    else 
+      this.noname = true;
   };
 
   /** 初始化评论系统 */
@@ -178,7 +182,8 @@ $(document).ready(function () {
     doRequest('comment','GET',{
       filter: {
         where: {
-          "appKey": this.opt.appKey
+          "appKey": this.opt.appKey,
+          "pageKey": this.opt.page
         },
         order: this.order
       }
@@ -235,13 +240,14 @@ $(document).ready(function () {
 
   /** 点赞事件响应 */
   Comment.prototype.upComment = function (id) {
-    debugger;
     var that = this;
     var commentIns = that.commentsDict[id];
-    doRequest('comment','GET',{
-      _id: id
-    }, function (ret, err) {
-      commentIns.upCount = ret[0].upCount + 1;
+    doRequest('comment/' + id,'GET',{}, function (ret, err) {
+      if(err || !ret) {
+        that.alertFunc.call(window, '该条评论已经不存在了');
+        return;
+      }
+      commentIns.upCount = ret.upCount + 1;
       doRequest('comment/'+ id ,'PUT',{
         upCount: commentIns.upCount
       }, function (ret, err) {
@@ -257,7 +263,7 @@ $(document).ready(function () {
   Comment.prototype.buildEditor = function (errMsg) {
     if (errMsg) return;
     var ele = this.contentEle;
-    ele.append('<div id="commentTextArea"><textarea id="commentEditor" \
+    ele.append('<div id="commentTextArea" style="margin:10px 10px 50px 10px"><textarea id="commentEditor" \
     style="height:' + this.opt.editorHeight +';max-height:' + this.opt.editorMaxHeight +'">\
     ' + PLACE_HOLDER + '</textarea></div>');
 
@@ -272,7 +278,12 @@ $(document).ready(function () {
     });
 
     var textArea = $("#commentTextArea");
-    textArea.append('<button class="comment-publish-btn" onclick="shaoshuo.commentPage()">发表评论</button>');
+    var checkInfo = that.noname ? 'checked="checked"' : "";
+    textArea.append('<div><div><input ' + checkInfo + '  class="noname-checkbox" type="checkbox" \
+    onchange="shaoshuo.noname=!shaoshuo.noname"  />匿名评论</div>\
+    <div>用户名:<input type="text" id="replyTextUser" class="user-name-input" value="' + that.currentUser +'" \
+    onchange="shaoshuo.changeUsername(this)"  placeholder="输入你的昵称" /></div>\
+    <button class="comment-publish-btn" onclick="shaoshuo.commentPage()">发表评论</button></div>');
   };
 
   Comment.prototype.buildReplyEditor = function (id) {
@@ -294,8 +305,9 @@ $(document).ready(function () {
     var textArea = $("#replyCommentTextArea");
     var checkInfo = that.noname ? 'checked="checked"' : "";
     textArea.append('<div class="comment-publish-area">\
-    <div><input ' + checkInfo + ' type="checkbox" onchange="shaoshuo.noname=!shaoshuo.noname"  />匿名评论</div>\
-    <div>用户名:<input type="text" id="replyCommentTextUser" placeholder="输入你的昵称" /></div>\
+    <div><input ' + checkInfo + '  class="noname-checkbox" type="checkbox" onchange="shaoshuo.noname=!shaoshuo.noname"  />匿名评论</div>\
+    <div>用户名:<input type="text" id="replyCommentTextUser" onchange="shaoshuo.changeUsername(this)" \
+     class="user-name-input" value="' + that.currentUser +'"  placeholder="输入你的昵称" /></div>\
     <button class="comment-publish-reply-btn" onclick="shaoshuo.commentReply(\'' + id + '\')">回复</button></div>')
   };
 
@@ -318,6 +330,18 @@ $(document).ready(function () {
     return this.currentUser;
   }
 
+  Comment.prototype.changeUsername = function (element) {  
+    var newname = $(element).val().trim();
+    var that = this;
+    if(newname) {
+      $('.user-name-input').each(function () {
+        $(this).val(newname);
+        that.currentUser = newname;
+      });
+      localStorage.setItem("comment-user-name", newname);
+    }
+  }
+
   /** 递归构建评论列表的二维链表 */
   function setTreePos(root, seqArr, item) {
     var currentSeq = seqArr.shift();
@@ -336,14 +360,15 @@ $(document).ready(function () {
   function genCommentHtml(comments) {
     //由于实现方式的问题(key为整数的对象v8会自动排序), 暂不支持多样化排序
     var html = '<div class="comment-area">';
-    html += '<div> <span class="comment-operation-area-text">评论区</span>\
-    <div style="display:none" class="comment-operation-area"> <a href="javascript:void(0)" onclick="shaoshuo.changeOrder(\'latest\')" >最新</a>\
+    html += '<div><div style="display:none" class="comment-operation-area">\
+    <a href="javascript:void(0)" onclick="shaoshuo.changeOrder(\'latest\')" >最新</a>\
     <a href="javascript:void(0)" onclick="shaoshuo.changeOrder(\'earliest\')" >最早</a>\
     <a href="javascript:void(0)" onclick="shaoshuo.changeOrder(\'hotest\')" >最热</a>  </div></div>\
     </div>';
     html += '<div class="comment-content-area"><ul class="comment-content-list">';
+    var cnt = 0;
     for (var commentItem in comments) {
-      html += '<li class="comment-item-li">';
+      html += '<li class="comment-item-li"><span>' + (++cnt) + '楼</span>';
       html += genCommentContent(comments[commentItem], 1);
       html += '</li>';
     }
@@ -358,7 +383,7 @@ $(document).ready(function () {
     html += '<div class="comment-item-header">\
     <div class="comment-header-info">' +
       (!!commentItem.username ? commentItem.username : ('神秘游客&nbsp;' + commentItem.region)) +
-      '&nbsp;' + commentItem.createdAt + '</div><div class="comment-header-operation">\
+      '&nbsp;' + new Date(commentItem.createdAt).Format('yyyy-MM-dd hh:mm:ss') + '</div><div class="comment-header-operation">\
     <a href="javascript:void(0)" class="comment-header-up" onclick="shaoshuo.upComment(\'' + commentItem.id + '\')">\
     <span class="comment-header-up-icon"></span>顶(<span id="comment-up-' + commentItem.id + '">'+ commentItem.upCount +'</span>)</a>\
     <a href="javascript:void(0)" class="comment-header-reply" onclick="shaoshuo.buildReplyEditor(\'' + commentItem.id + '\')">\
@@ -368,10 +393,9 @@ $(document).ready(function () {
     html += '</div>';
     for (var subItem in commentItem.subItems) {
       html += '<div class="comment-reply-div" style="margin-left:' + depth*20 +'px" >';
-      html += genCommentContent(commentItem.subItems[subItem], depth + 1);
+      html += genCommentContent(commentItem.subItems[subItem], depth);
       html += '</div>';
     }
-    html += '</div>';
     return html;
   }
 
@@ -438,7 +462,7 @@ $(document).ready(function () {
       type: method,
       timeout: 10000,
       url: 'https://d.apicloud.com/mcm/api/' + model,
-      data: JSON.stringify(param),
+      data: method == 'GET' ? param : JSON.stringify(param),
       dataType: 'json',
       contentType: 'application/json',
       success: function (data) {  
@@ -619,6 +643,22 @@ $(document).ready(function () {
     return temp.toLowerCase();
 
   }
+
+  Date.prototype.Format = function (fmt) {
+    var o = {
+        'M+': this.getMonth() + 1, //月份
+        'd+': this.getDate(), //日
+        'h+': this.getHours(), //小时
+        'm+': this.getMinutes(), //分
+        's+': this.getSeconds(), //秒
+        'q+': Math.floor((this.getMonth() + 3) / 3), //季度
+        'S': this.getMilliseconds()//毫秒
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+    for (var k in o)
+        if (new RegExp('(' + k + ')').test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)));
+    return fmt;
+  };
 
   window.shaoshuo = new Comment();
 });

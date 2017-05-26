@@ -1,0 +1,81 @@
+/* 整个评论区的样式 */
+.comment-content-area{
+
+}
+
+/* 每个楼的样式 */
+.comment-content-list {
+
+}
+
+/* 每个楼的li元素 */
+.comment-item-li {
+
+}
+
+/* xx楼字样 */
+.comment-item-li > span{
+  
+}
+/* 每个楼的div元素 */
+.comment-item-div {
+
+}
+
+/* 用户名, 时间区域等信息 */
+.comment-item-header {
+
+}
+
+/* 点赞和回复按钮 */
+.comment-header-operation {
+
+}
+
+/* 点赞按钮 */
+.comment-header-up {
+
+}
+
+/* 点赞的图标 */
+.comment-header-up-icon {
+
+}
+
+/* 回复按钮 */
+.comment-header-reply {
+
+}
+
+/* 评论内容容器 */
+.comment-content-text {
+
+}
+
+/* 发表评论按钮 */
+.comment-publish-btn {
+
+}
+
+/* 发表回复按钮 */
+.comment-publish-reply-btn {
+
+}
+
+/* 评论回复区 */
+.comment-publish-area {
+
+}
+
+/* 评论回复区 */
+.comment-publish-area {
+
+}
+
+.noname-checkbox {
+
+}
+
+.user-name-input {
+
+}
