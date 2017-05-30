@@ -21,3 +21,6 @@ shaoshuo.init({
 2. If you want to use your own database, you could register a new cloud database in [APICloud](http://www.apicloud.com/) and create 2 documents
 3. If you don't want to use APICloud, you could implement RESTFUL API interfaces
 
+## Demo
+You can comment on  _[DEMO Page](https://code2life.github.io/Shaoshuo/example.html)_
+
