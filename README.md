@@ -6,13 +6,15 @@ A simple comment plugin write by _jQuery_ With [APICloud](http://www.apicloud.co
 
 ## Usage
 Shaoshuo Comment Plugin is easy to use. You can generate a simple comment system like following
->shaoshuo.init({    
->      appKey: 'xxxx',   //a unique key for a website, you can use 'CommonKey' or ask author for the unique key   
->      page: 'xxxx',     //a unique key for a page    
->      element: 'xxxx',  //the DOM element to load comment plugin    
->      editorHeight: '200px', //comment/reply editor initial height, optional    
->      editorMaxHeight: '300px' //comment/reply editor max height, optional   
->     }); 
+```javascript
+shaoshuo.init({    
+    appKey: 'xxxx',   //a unique key for a website, you can use 'CommonKey' or ask author for the unique key   
+    page: 'xxxx',     //a unique key for a page    
+    element: 'xxxx',  //the DOM element to load comment plugin    
+    editorHeight: '200px', //comment/reply editor initial height, optional    
+    editorMaxHeight: '300px' //comment/reply editor max height, optional   
+}); 
+```
 
 ## Notice
 1. You can customize CSS by overwrite classes in comment.css
