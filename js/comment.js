@@ -1,21 +1,23 @@
 /****************************
- * 
- * 
- * 
- * 
- * 
- * 
- * 
+ * Name: Shaoshuo Comment Plugin
+ * Version: 1.0.0.1
+ * Author: code2life
+ * Date: 2017-5-30
+ * Description: 
+ * A simple comment plugin write by jQuery
+ * With APICloud Open Mongodb (Cloud API)
  ****************************/
 
 /**
- * api example
+ * comment plugin example
  * 
  * shaoshuo.init({
- *  appKey: 'xxxx',
- *  page: 'xxxx',
- *  element: 'xxxx',
- * })
+ *  appKey: 'xxxx',   //a unique key for a website, you can use 'CommonKey' or ask author for the unique key
+ *  page: 'xxxx',     //a unique key for a page 
+ *  element: 'xxxx',  //the DOM element to load comment plugin
+ *  editorHeight: '200px', //comment/reply editor initial height
+ *  editorMaxHeight: '300px' //comment/reply editor max height
+ * });
  */
 
 $(document).ready(function () {
@@ -51,6 +53,8 @@ $(document).ready(function () {
       weibo:tmpWeibo
     }
   })();
+
+  var THROTTLE_DELAY = 5000;
   
   var DEFAULT_MENU = [
     'bold','underline','italic','strikethrough','|',
@@ -87,7 +91,7 @@ $(document).ready(function () {
     this.commentsDict = null;
     this.alertFunc = window.alert;
     this.order = CommentOrder.earliest;
-    this.currentUser = localStorage.getItem('comment-user-name');
+    this.currentUser = localStorage.getItem('comment-user-name') || "";
     if(this.currentUser)
       this.noname = false;
     else 
@@ -239,7 +243,7 @@ $(document).ready(function () {
   }
 
   /** 点赞事件响应 */
-  Comment.prototype.upComment = function (id) {
+  Comment.prototype.upComment = throttle(THROTTLE_DELAY, function (id) {
     var that = this;
     var commentIns = that.commentsDict[id];
     doRequest('comment/' + id,'GET',{}, function (ret, err) {
@@ -258,7 +262,7 @@ $(document).ready(function () {
         }
       });
     });
-  };
+  });
 
   Comment.prototype.buildEditor = function (errMsg) {
     if (errMsg) return;
@@ -334,11 +338,18 @@ $(document).ready(function () {
     var newname = $(element).val().trim();
     var that = this;
     if(newname) {
+      $('.noname-checkbox').removeAttr('checked');
+      this.noname = false;
       $('.user-name-input').each(function () {
         $(this).val(newname);
-        that.currentUser = newname;
+        that.currentUser = newname || '';
       });
       localStorage.setItem("comment-user-name", newname);
+    } else {
+      this.noname = true;
+      $('.noname-checkbox').prop('checked', true);
+      localStorage.removeItem("comment-user-name");
+      that.currentUser = '';
     }
   }
 
@@ -642,6 +653,17 @@ $(document).ready(function () {
 
     return temp.toLowerCase();
 
+  }
+
+  function throttle(delay, action) {
+    var last = 0;
+    return function(){
+      var curr = +new Date();
+      if (curr - last > delay){
+        action.apply(this, arguments);
+        last = curr;
+      }
+    }
   }
 
   Date.prototype.Format = function (fmt) {
