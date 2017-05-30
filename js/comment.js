@@ -33,7 +33,7 @@ $(document).ready(function () {
   var CommentConfig = {
     cloudAppId: "A6948718224019",
     cloudAppKey: "C3D6CB6F-AB49-A1E4-1094-18DD7480111B",
-    cdnStorage: "http://op44al5jk.bkt.clouddn.com/"
+    cdnStorage: (window.location.protocol.indexOf('https') != -1 ? "https:" : "http:" ) + "//op44al5jk.bkt.clouddn.com/"
   };
 
   var DEFAULT_HEIGHT = "130px";
@@ -412,6 +412,8 @@ $(document).ready(function () {
 
   /** 资源动态加载 */
   function loadResources(cb) {
+	var protocol = window.location.protocol.indexOf('https') != -1 ? "https:" : "http:";
+	  
     /** js/css动态加载工具 */
     var dynamicLoading = {
       css: function (path) {
@@ -453,7 +455,7 @@ $(document).ready(function () {
     /** 开始加载cdn资源 */
     var loadCnt = 1;
     // 获取当前IP和地理信息
-    dynamicLoading.js('http://pv.sohu.com/cityjson?ie=utf-8', checkLoaded);
+    dynamicLoading.js(protocol + '//pv.sohu.com/cityjson?ie=utf-8', checkLoaded);
     function checkLoaded() {
       if(--loadCnt == 0) {
         cb();
