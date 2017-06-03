@@ -39,7 +39,7 @@ $(document).ready(function () {
   var DEFAULT_HEIGHT = "130px";
   var DEFAULT_MAX_HEIGHT = "300px";
   var DEFAULT_CONTENT = '<p style="color:#555"><br></p>';
-  var PLACE_HOLDER = '<p style="color:#999">说点什么吧</p>';
+  var PLACE_HOLDER = '<p style="color:#555"></p>';
 
   (function initEditorConfig() {
     wangEditor.config.mapAk = '61su9bm0PHw4gkMIZt8cZWpG'
@@ -185,6 +185,7 @@ $(document).ready(function () {
   Comment.prototype.queryComment = function (callback) {
     doRequest('comment','GET',{
       filter: {
+        limit: 2000,
         where: {
           "appKey": this.opt.appKey,
           "pageKey": this.opt.page
@@ -274,19 +275,26 @@ $(document).ready(function () {
     this.editor = new wangEditor('commentEditor');
     this.editor.config.menus = DEFAULT_MENU.concat(EXTRA_MENU);
     this.editor.create();
+    this.editor.$txt.css("background-color", "transparent");
+    this.editor.$txt.before('<div style="height:0"><input style="border:none;padding:10px 15px" id="placeholderInput" placeholder="说点什么吧"></div>');
 
+    $('#placeholderInput').click(function(){
+      $(this).remove();
+      that.editor.$txt.focus();
+    });
     var that = this;
     this.editor.$txt.one('click', function () { 
       notClick = false;
-      that.editor.$txt.html(DEFAULT_CONTENT);
+      $('#placeholderInput').remove();
+      //that.editor.$txt.html(DEFAULT_CONTENT);
     });
 
     var textArea = $("#commentTextArea");
     var checkInfo = that.noname ? 'checked="checked"' : "";
-    textArea.append('<div><div><input ' + checkInfo + '  class="noname-checkbox" type="checkbox" \
-    onchange="shaoshuo.noname=!shaoshuo.noname"  />匿名评论</div>\
-    <div>用户名:<input type="text" id="replyTextUser" class="user-name-input" value="' + that.currentUser +'" \
-    onchange="shaoshuo.changeUsername(this)"  placeholder="输入你的昵称" /></div>\
+    textArea.append('<div><div class="check-box-div" style="color:#555"><input ' + checkInfo + '  class="noname-checkbox" id="check1" type="checkbox" \
+    onchange="shaoshuo.noname=!shaoshuo.noname"  /><label for="check1">匿名评论</label>\
+    <div  class="user-name-div"><input type="text" id="replyTextUser" class="user-name-input" value="' + that.currentUser +'" \
+    onchange="shaoshuo.changeUsername(this)"  placeholder="输入您的昵称" /></div></div>\
     <button class="comment-publish-btn" onclick="shaoshuo.commentPage()">发表评论</button></div>');
   };
 
@@ -309,9 +317,9 @@ $(document).ready(function () {
     var textArea = $("#replyCommentTextArea");
     var checkInfo = that.noname ? 'checked="checked"' : "";
     textArea.append('<div class="comment-publish-area">\
-    <div><input ' + checkInfo + '  class="noname-checkbox" type="checkbox" onchange="shaoshuo.noname=!shaoshuo.noname"  />匿名评论</div>\
-    <div>用户名:<input type="text" id="replyCommentTextUser" onchange="shaoshuo.changeUsername(this)" \
-     class="user-name-input" value="' + that.currentUser +'"  placeholder="输入你的昵称" /></div>\
+    <div  class="check-box-div" style="color:#555"><input ' + checkInfo + '  class="noname-checkbox" id="check2" type="checkbox" onchange="shaoshuo.noname=!shaoshuo.noname"  /><label for="check2">匿名评论</label>\
+    <div class="user-name-div"><input type="text" id="replyCommentTextUser" onchange="shaoshuo.changeUsername(this)" \
+     class="user-name-input" value="' + that.currentUser +'"  placeholder="输入您的昵称" /></div></div>\
     <button class="comment-publish-reply-btn" onclick="shaoshuo.commentReply(\'' + id + '\')">回复</button></div>')
   };
 
@@ -327,9 +335,9 @@ $(document).ready(function () {
     if (!this.currentUser || this.noname) {
       var ipSeq = returnCitySN.cip.split('.');
       if (ipSeq.length == 4)
-        return ":)游客" + ipSeq[2] + ipSeq[3];
+        return "游客" + ipSeq[2] + ipSeq[3];
       else
-        return ":)神秘游客";
+        return "神秘游客";
     }
     return this.currentUser;
   }
@@ -337,7 +345,7 @@ $(document).ready(function () {
   Comment.prototype.changeUsername = function (element) {  
     var newname = $(element).val().trim();
     var that = this;
-    if(newname) {
+    if(newname && newname.length <= 10) {
       $('.noname-checkbox').removeAttr('checked');
       this.noname = false;
       $('.user-name-input').each(function () {
@@ -348,8 +356,12 @@ $(document).ready(function () {
     } else {
       this.noname = true;
       $('.noname-checkbox').prop('checked', true);
+      $('.user-name-input').val("");
       localStorage.removeItem("comment-user-name");
       that.currentUser = '';
+      if(newname.length > 10) {
+        that.alertFunc.call(window,'用户名长度不能超过10!');
+      } 
     }
   }
 
@@ -389,22 +401,25 @@ $(document).ready(function () {
 
   /** 生成每个评论内容的html */
   function genCommentContent(commentItem, depth) {
+    var notEnough = $(window).width() < 625;
+    var noDisplayDate = notEnough ? "no-display" : "";
+    var noDisplayReply = depth >= 3 ? "no-display" : "";
     var html = '<div id="comment-' + commentItem.id + '" class="comment-item-div">';
     html += '<img width="33px" height="33px" src="' + CommentConfig.cdnStorage + 'default-icon.png" />';
     html += '<div class="comment-item-header">\
-    <div class="comment-header-info">' +
+    <div class="comment-header-info"><span class="comment-user-name">' +
       (!!commentItem.username ? commentItem.username : ('神秘游客&nbsp;' + commentItem.region)) +
-      '&nbsp;' + new Date(commentItem.createdAt).Format('yyyy-MM-dd hh:mm:ss') + '</div><div class="comment-header-operation">\
+      '</span><span class="comment-time ' + noDisplayDate + '">' + new Date(commentItem.createdAt).Format('yyyy-MM-dd hh:mm') + '</span><div class="comment-header-operation">\
     <a href="javascript:void(0)" class="comment-header-up" onclick="shaoshuo.upComment(\'' + commentItem.id + '\')">\
     <span class="comment-header-up-icon"></span>顶(<span id="comment-up-' + commentItem.id + '">'+ commentItem.upCount +'</span>)</a>\
-    <a href="javascript:void(0)" class="comment-header-reply" onclick="shaoshuo.buildReplyEditor(\'' + commentItem.id + '\')">\
+    <a href="javascript:void(0)" class="comment-header-reply ' + noDisplayReply + '" onclick="shaoshuo.buildReplyEditor(\'' + commentItem.id + '\')">\
     <span class="comment-header-reply-icon"></span>回复</a>\
-    </div></div>';
+    </div></div></div>';
     html += '<div class="comment-content-text">' + commentItem.content + '</div>';
     html += '</div>';
     for (var subItem in commentItem.subItems) {
-      html += '<div class="comment-reply-div" style="margin-left:' + depth*20 +'px" >';
-      html += genCommentContent(commentItem.subItems[subItem], depth);
+      html += '<div class="comment-reply-div" style="margin-left:2em" >';
+      html += genCommentContent(commentItem.subItems[subItem], depth+1);
       html += '</div>';
     }
     return html;
@@ -470,7 +485,9 @@ $(document).ready(function () {
     var ajaxConfig = {
       headers: {
         'X-APICloud-AppId': CommentConfig.cloudAppId,
-        'X-APICloud-AppKey': appKey
+        'X-APICloud-AppKey': appKey,
+        'Cache-Control': 'no-cache',
+        'If-Modified-Since': 0
       },
       type: method,
       timeout: 10000,

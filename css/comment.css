@@ -1,81 +1,292 @@
 /* 整个评论区的样式 */
-.comment-content-area{
 
+#shaoshuoCommentArea h1,
+#shaoshuoCommentArea p,
+#shaoshuoCommentArea li,
+#shaoshuoCommentArea input,
+#shaoshuoCommentArea button,
+#shaoshuoCommentArea span,
+#shaoshuoCommentArea div {
+    font: 14px/1.5 "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .004);
 }
+
+#commentTextArea h1,
+#commentTextArea p,
+#commentTextArea li,
+#commentTextArea input,
+#commentTextArea button,
+#commentTextArea span,
+#commentTextArea div {
+    font: 14px/1.5 "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .004);
+}
+
 
 /* 每个楼的样式 */
-.comment-content-list {
 
+.comment-content-list {
+    list-style: none;
+    width: calc(100% - 70px)
 }
+
 
 /* 每个楼的li元素 */
-.comment-item-li {
 
+.comment-item-li {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 0;
+    background-color: #FFF;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .16), 0 0 2px 0 rgba(0, 0, 0, .12);
 }
+
 
 /* xx楼字样 */
-.comment-item-li > span{
-  
-}
-/* 每个楼的div元素 */
-.comment-item-div {
 
+.comment-item-li>span {
+    float: right;
+    font-size: 12px !important;
+    color: #999;
+    position: relative;
+    top: -2px;
 }
+
+
+/* 每个楼的div元素 */
+
+.comment-item-div {}
+
+.comment-item-div>img {
+    float: left;
+    margin-right: 20px;
+}
+
+.comment-header-info {
+    color: #555;
+}
+
+.comment-user-name {}
+
+.comment-time {
+    float: right;
+    font-size: 13px !important;
+    color: #777;
+    margin-right: 20px;
+    padding: 1px;
+}
+
 
 /* 用户名, 时间区域等信息 */
-.comment-item-header {
 
-}
+.comment-item-header {}
+
 
 /* 点赞和回复按钮 */
-.comment-header-operation {
 
+.comment-header-operation {
+    display: inline;
+    float: right;
 }
+
 
 /* 点赞按钮 */
-.comment-header-up {
 
+.comment-header-up {
+    color: #666;
+    text-decoration: none;
+    font-size: 13px !important;
+    padding: 5px 10px;
+    transition: all .4s ease-in-out;
+    border-radius: 2px;
+    position: relative;
+    top: -1px;
 }
+
+.comment-header-up:hover {
+    color: rgba(0, 0, 0, .87);
+    background-color: #f2f2f2;
+}
+
 
 /* 点赞的图标 */
-.comment-header-up-icon {
 
+.comment-header-up-icon {}
+
+.comment-header-up-icon+span {
+    color: #3A6;
 }
+
+.wangEditor-container {
+    border: 1px solid #DDE !important;
+    border-top: none !important;
+}
+
 
 /* 回复按钮 */
-.comment-header-reply {
 
+.comment-header-reply {
+    margin-right: 10px;
+    color: #666;
+    text-decoration: none;
+    font-size: 13px !important;
+    padding: 5px 10px;
+    transition: all .4s ease-in-out;
+    border-radius: 2px;
 }
+
+.comment-header-reply:hover {
+    color: rgba(0, 0, 0, .87);
+    background-color: #f2f2f2;
+}
+
 
 /* 评论内容容器 */
-.comment-content-text {
 
+.comment-content-text {
+    margin-left: 55px;
 }
 
-/* 发表评论按钮 */
-.comment-publish-btn {
+.comment-content-text>p {
+    margin: 2px 5px 10px 0px;
+}
 
+
+/* 发表评论按钮 */
+
+.comment-publish-btn,
+.comment-publish-reply-btn {
+    float: right;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.87);
+    background-color: #FFF;
+    transition: all 0.2s ease-in-out;
+    display: inline-block;
+    height: 30px;
+    padding: 0 26px;
+    margin: 20px 0 6px 0;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    background-image: none;
+    text-align: center;
+    line-height: 30px;
+    vertical-align: middle;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    font-size: 14px;
+    font-family: inherit;
+    letter-spacing: 0.03em;
+    position: relative;
+    overflow: hidden;
+    color: #FFF;
+    background-color: #2196F3;
+    box-shadow: 0 0px 2px rgba(0, 0, 0, 0.12), 0 2px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.12), -1px 0px 2px rgba(0, 0, 0, 0.12), 0 0px 2px rgba(0, 0, 0, 0.12), 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.comment-publish-btn:hover,
+.comment-publish-reply-btn:hover {
+    color: rgba(0, 0, 0, 0.87);
+    background-color: white;
+    outline: 0;
+    text-decoration: none;
+    color: rgba(0, 0, 0, 0.87);
+    color: #FFF;
+    background-color: #38a0e2;
+    box-shadow: 0 0px 2px rgba(0, 0, 0, 0.12), 0 2px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.12), -1px 0px 2px rgba(0, 0, 0, 0.12), 0 0px 2px rgba(0, 0, 0, 0.12), 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+
+.no-display {
+    display: none;
 }
 
 /* 发表回复按钮 */
-.comment-publish-reply-btn {
 
-}
+.comment-publish-reply-btn {}
 
-/* 评论回复区 */
-.comment-publish-area {
-
-}
 
 /* 评论回复区 */
-.comment-publish-area {
 
+.comment-publish-area {
+    min-height: 55px;
+}
+
+
+/* 评论回复区 */
+
+.comment-publish-area {}
+
+.check-box-div {
+    float: left;
+    padding: 15px 5px 5px 5px;
+}
+
+.user-name-div {
+    width: 250px;
+    float: left;
+    position: relative;
+    top: -10px;
 }
 
 .noname-checkbox {
+    color: #888;
+    float: left;
+}
 
+.noname-checkbox+label {
+    float: left;
+    margin-right: 10px;
 }
 
 .user-name-input {
+    display: block;
+    padding-top: 15px;
+    position: relative;
+    box-sizing: border-box;
+    display: block;
+    background-color: transparent;
+    color: rgba(0, 0, 0, 0.87);
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.26);
+    outline: none;
+    width: 100%;
+    padding: 0;
+    box-shadow: none;
+    border-radius: 0px;
+    font-size: 16px;
+    font-family: inherit;
+    line-height: inherit;
+    background-image: none;
+    height: 32px;
+}
 
+.input-name-label {
+    top: 0;
+    display: block;
+    width: 100%;
+    color: rgba(0, 0, 0, 0.54);
+    font-size: 12px !important;
+    font-weight: 400;
+    line-height: 12px;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.user-name-input:focus {
+    border-color: #2196F3;
+    border-width: 2px;
+    height: 33px;
+    margin-bottom: -1px;
 }
