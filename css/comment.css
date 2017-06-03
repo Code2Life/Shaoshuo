@@ -27,7 +27,13 @@
 
 .comment-content-list {
     list-style: none;
-    width: calc(100% - 70px)
+    padding:0.5em 1em;
+}
+
+@media screen and (max-width: 625px) {
+.comment-content-list{
+    padding:0.5em 0.1em;
+}
 }
 
 
