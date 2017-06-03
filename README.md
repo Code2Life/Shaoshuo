@@ -23,6 +23,7 @@ shaoshuo.init({
 4. Up comment button can only press onece in 5s, because of the throttle
 
 ## Demo & Source
-You can comment on  _[DEMO Page](https://code2life.github.io/Shaoshuo/example.html)_
+You can comment on  _[DEMO Page](https://code2life.github.io/Shaoshuo/example.html)_   
+
 Here is the project source code : _[Github](https://github.com/Code2Life/Shaoshuo)_
 
