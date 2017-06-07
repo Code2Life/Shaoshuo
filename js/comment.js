@@ -44,14 +44,6 @@ $(document).ready(function () {
   (function initEditorConfig() {
     wangEditor.config.mapAk = '61su9bm0PHw4gkMIZt8cZWpG'
     wangEditor.config.menuFixed = false;
-    var tmpWeibo = wangEditor.config.emotions.weibo;
-    wangEditor.config.emotions = {
-      default: {
-          title: '默认',
-          data: CommentConfig.cdnStorage + 'comment_emotions.json'
-      },
-      weibo:tmpWeibo
-    }
   })();
 
   var THROTTLE_DELAY = 5000;
