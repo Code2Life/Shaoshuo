@@ -33,7 +33,7 @@ $(document).ready(function () {
   var CommentConfig = {
     cloudAppId: "A6948718224019",
     cloudAppKey: "C3D6CB6F-AB49-A1E4-1094-18DD7480111B",
-    cdnStorage: (window.location.protocol.indexOf('https') != -1 ? "https:" : "http:" ) + "//op44al5jk.bkt.clouddn.com/"
+    cdnStorage: (window.location.protocol.indexOf('https') != -1 ? "https:" : "http:" ) + "//filecdn.code2life.top/"
   };
 
   var DEFAULT_HEIGHT = "130px";
