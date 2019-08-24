@@ -2,7 +2,7 @@
 A Portable Comment System
 
 ## Description
-A simple comment plugin write by _jQuery_ With [APICloud](http://www.apicloud.com/) Open Mongodb (Cloud API)
+A simple comment plugin write by _jQuery_ With [APICloud](http://www.apicloud.com/) backend storage
 
 ## Usage
 Shaoshuo Comment Plugin is easy to use. You can generate a simple comment system like following
